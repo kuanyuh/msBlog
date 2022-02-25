@@ -3,30 +3,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <artifactId>msBlog</artifactId>
+        <groupId>xyz.kuanyu</groupId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>xyz.kuanyu</groupId>
-    <artifactId>msBlog</artifactId>
+    <artifactId>blog-admin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>msBlog</name>
-    <description>msBlog</description>
+    <name>blog-admin</name>
+    <description>blog-admin</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
-    <modules>
-        <module>blog-api</module>
-        <module>blog-admin</module>
-    </modules>
-    <packaging>pom</packaging>
 
-    <dependencyManagement>
-        <dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-        </dependencies>
-    </dependencyManagement>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -36,4 +37,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
