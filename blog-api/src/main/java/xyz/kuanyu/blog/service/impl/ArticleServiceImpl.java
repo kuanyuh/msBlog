@@ -44,11 +44,19 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVoList;
     }
 
-    private ArticleVo copy(Article article) {
+    private ArticleVo copy(Article article, boolean isTag, boolean isAuthor) {
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article, articleVo);
 
         articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd HH:mm"));
+
+        if (isTag){
+            Long articleId = article.getId();
+            articleVo.setTags();
+        }
+        if (isAuthor){
+            articleVo.setAuthor("");
+        }
         return articleVo;
     }
 }
