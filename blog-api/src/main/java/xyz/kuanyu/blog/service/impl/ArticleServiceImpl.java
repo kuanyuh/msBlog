@@ -8,6 +8,7 @@ import xyz.kuanyu.blog.service.ArticleService;
 import xyz.kuanyu.blog.service.SysUserService;
 import xyz.kuanyu.blog.service.TagService;
 import xyz.kuanyu.blog.vo.ArticleVo;
+import xyz.kuanyu.blog.vo.Result;
 import xyz.kuanyu.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +43,16 @@ public class ArticleServiceImpl implements ArticleService {
         List<Article> records = articlePage.getRecords();
         List<ArticleVo> articleVoList = copyList(records, true, true);
         return articleVoList;
+    }
+
+    @Override
+    public Result hotArticle(int limit) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.select(Article::getId, Article::getTitle);
+        queryWrapper.last("limit " + limit);
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        return Result.success(copyList(articles, false, false));
     }
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
