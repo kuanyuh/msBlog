@@ -1,5 +1,8 @@
 package xyz.kuanyu.blog.vo;
 
+import lombok.Data;
+
+@Data
 public class TagVo {
 
     private Long id;

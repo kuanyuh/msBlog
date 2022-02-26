@@ -19,7 +19,7 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @PostMapping("/test")
+    @PostMapping
     public Result listArticle(@RequestBody PageParams pageParams){
         //ArticleVo 页面接收的数据
         List<ArticleVo> articles = articleService.listArticlesPage(pageParams);

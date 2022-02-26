@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.kuanyu.blog.dao.mapper.ArticleMapper;
 import xyz.kuanyu.blog.dao.pojo.Article;
 import xyz.kuanyu.blog.service.ArticleService;
+import xyz.kuanyu.blog.service.SysUserService;
+import xyz.kuanyu.blog.service.TagService;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
@@ -21,6 +23,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private SysUserService sysUserService;
+
     @Override
     public List<ArticleVo> listArticlesPage(PageParams pageParams) {
         /**
@@ -32,14 +40,14 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
         List<Article> records = articlePage.getRecords();
-        List<ArticleVo> articleVoList = copyList(records);
+        List<ArticleVo> articleVoList = copyList(records, true, true);
         return articleVoList;
     }
 
-    private List<ArticleVo> copyList(List<Article> records) {
+    private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
         List<ArticleVo> articleVoList = new ArrayList<>();
         for (Article record: records) {
-            articleVoList.add(copy(record));
+            articleVoList.add(copy(record, isTag, isAuthor));
         }
         return articleVoList;
     }
@@ -52,10 +60,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (isTag){
             Long articleId = article.getId();
-            articleVo.setTags();
+            articleVo.setTags(tagService.findTagsByArticleId(articleId));
         }
         if (isAuthor){
-            articleVo.setAuthor("");
+            Long authorId = article.getAuthorId();
+            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
         }
         return articleVo;
     }

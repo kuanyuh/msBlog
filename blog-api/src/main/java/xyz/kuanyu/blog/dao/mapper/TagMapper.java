@@ -7,4 +7,9 @@ import java.util.List;
 
 public interface TagMapper extends BaseMapper<Tag> {
     List<Tag> findTagsByArticleId(Long articleId);
+
+    //查询最热标签 前n个
+    List<Long> findHotsTagIds(int limit);
+
+    List<Tag> findTagsByTagIds(List<Long> tagIds);
 }
