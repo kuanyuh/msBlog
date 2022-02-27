@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+blog-api/src/main/resources/application.properties
