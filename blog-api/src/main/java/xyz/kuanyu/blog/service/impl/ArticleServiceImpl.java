@@ -2,6 +2,7 @@ package xyz.kuanyu.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import xyz.kuanyu.blog.dao.dos.Archives;
 import xyz.kuanyu.blog.dao.mapper.ArticleMapper;
 import xyz.kuanyu.blog.dao.pojo.Article;
 import xyz.kuanyu.blog.service.ArticleService;
@@ -53,6 +54,23 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.last("limit " + limit);
         List<Article> articles = articleMapper.selectList(queryWrapper);
         return Result.success(copyList(articles, false, false));
+    }
+
+    @Override
+    public Result newArticles(int limit) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getCreateDate);
+        queryWrapper.select(Article::getId, Article::getTitle);
+        queryWrapper.last("limit " + limit);
+        //select id, title from article order by create_date desc limit 5
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        return Result.success(copyList(articles, false, false));
+    }
+
+    @Override
+    public Result listArchives() {
+        List<Archives> archivesList= articleMapper.listArchives();
+        return Result.success(archivesList);
     }
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {

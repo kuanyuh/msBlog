@@ -11,4 +11,8 @@ public interface ArticleService {
     List<ArticleVo> listArticlesPage(PageParams pageParams);
 
     Result hotArticle(int limit);
+
+    Result newArticles(int limit);
+
+    Result listArchives();
 }
