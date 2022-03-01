@@ -14,6 +14,7 @@ import xyz.kuanyu.blog.vo.ErrorCode;
 import xyz.kuanyu.blog.vo.Result;
 import xyz.kuanyu.blog.vo.params.LoginParam;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -51,5 +52,22 @@ public class LoginServiceImpl implements LoginService {
 
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),100, TimeUnit.DAYS);
         return Result.success(token);
+    }
+
+    @Override
+    public SysUser checkToken(String token) {
+        if (StringUtils.isBlank(token)){
+            return null;
+        }
+        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
+        if (stringObjectMap == null){
+            return null;
+        }
+        String userJson = redisTemplate.opsForValue().get("TOKEN_"+token);
+        if (StringUtils.isBlank(userJson)){ //过期
+            return null;
+        }
+        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
+        return sysUser;
     }
 }
