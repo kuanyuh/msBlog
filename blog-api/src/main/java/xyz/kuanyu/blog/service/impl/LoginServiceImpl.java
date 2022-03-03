@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.kuanyu.blog.dao.pojo.SysUser;
 import xyz.kuanyu.blog.service.LoginService;
 import xyz.kuanyu.blog.service.SysUserService;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Transactional
 public class LoginServiceImpl implements LoginService {
 
     @Autowired
@@ -117,7 +119,5 @@ public class LoginServiceImpl implements LoginService {
 
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),100, TimeUnit.DAYS);
         return Result.success(token);
-
-        return null;
     }
 }
