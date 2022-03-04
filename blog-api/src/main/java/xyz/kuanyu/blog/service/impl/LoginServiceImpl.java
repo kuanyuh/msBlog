@@ -52,7 +52,7 @@ public class LoginServiceImpl implements LoginService {
         }
         String token = JWTUtils.createToken(sysUser.getId());
 
-        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),100, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
         return Result.success(token);
     }
 
@@ -61,11 +61,11 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(token)){
             return null;
         }
-        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
+        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);//token过期
         if (stringObjectMap == null){
             return null;
         }
-        String userJson = redisTemplate.opsForValue().get("TOKEN_"+token);
+        String userJson = redisTemplate.opsForValue().get("TOKEN_"+token);//redis过期
         if (StringUtils.isBlank(userJson)){ //过期
             return null;
         }
@@ -117,7 +117,7 @@ public class LoginServiceImpl implements LoginService {
         this.sysUserService.save(sysUser);
         String token = JWTUtils.createToken(sysUser.getId());
 
-        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),100, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
         return Result.success(token);
     }
 }

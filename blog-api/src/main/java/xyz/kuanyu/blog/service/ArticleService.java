@@ -15,4 +15,6 @@ public interface ArticleService {
     Result newArticles(int limit);
 
     Result listArchives();
+
+    Result findArticleById(Long articleId);
 }
