@@ -7,10 +7,7 @@ import xyz.kuanyu.blog.dao.mapper.ArticleBodyMapper;
 import xyz.kuanyu.blog.dao.mapper.ArticleMapper;
 import xyz.kuanyu.blog.dao.pojo.Article;
 import xyz.kuanyu.blog.dao.pojo.ArticleBody;
-import xyz.kuanyu.blog.service.ArticleService;
-import xyz.kuanyu.blog.service.CategoryService;
-import xyz.kuanyu.blog.service.SysUserService;
-import xyz.kuanyu.blog.service.TagService;
+import xyz.kuanyu.blog.service.*;
 import xyz.kuanyu.blog.vo.ArticleBodyVo;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.Result;
@@ -77,6 +74,9 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(archivesList);
     }
 
+    @Autowired
+    private ThreadService threadService;
+
     @Override
     public Result findArticleById(Long articleId) {
 
@@ -90,7 +90,7 @@ public class ArticleServiceImpl implements ArticleService {
         //查看完文章之后，本应该直接返回数据了，这时候做了一个更新操作，更新时加写锁，阻塞其他的读操作，性能就会比较低
         // 更新 增加了此次接口的 耗时 如果一旦更新出问题，不能影响 查看文章的操作
         //线程池  可以把更新操作 扔到线程池中去执行，和主线程就不相关了
-        //threadService.updateArticleViewCount(articleMapper,article);
+        threadService.updateArticleViewCount(articleMapper,article);
         return Result.success(articleVo);
     }
 
