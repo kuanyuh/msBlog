@@ -2,6 +2,7 @@ package xyz.kuanyu.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import xyz.kuanyu.blog.service.SysUserService;
 import xyz.kuanyu.blog.vo.ErrorCode;
 import xyz.kuanyu.blog.vo.LoginUserVo;
 import xyz.kuanyu.blog.vo.Result;
+import xyz.kuanyu.blog.vo.UserVo;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -22,6 +24,20 @@ public class SysUserServiceImpl implements SysUserService {
     @Lazy
     @Autowired
     private LoginService loginService;
+
+    @Override
+    public UserVo findUserVoById(Long id) {
+        SysUser sysUser = sysUserMapper.selectById(id);
+        if (sysUser == null){
+            sysUser = new SysUser();
+            sysUser.setId(1L);
+            sysUser.setAvatar("/static/img/logo.b3a48c0.png");
+            sysUser.setNickname("无昵称");
+        }
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(sysUser, userVo);
+        return userVo;
+    }
 
     @Override
     public SysUser findUserById(Long id) {
