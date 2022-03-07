@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.kuanyu.blog.dao.mapper.CommentMapper;
 import xyz.kuanyu.blog.dao.pojo.Comment;
+import xyz.kuanyu.blog.dao.pojo.SysUser;
 import xyz.kuanyu.blog.service.CommentsService;
 import xyz.kuanyu.blog.service.SysUserService;
+import xyz.kuanyu.blog.utils.UserThreadLocal;
 import xyz.kuanyu.blog.vo.CommentVo;
 import xyz.kuanyu.blog.vo.Result;
 import xyz.kuanyu.blog.vo.UserVo;
+import xyz.kuanyu.blog.vo.params.CommentParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,28 @@ public class CommentsServiceImpl implements CommentsService {
         return Result.success(commentVoList);
     }
 
+    @Override
+    public Result comment(CommentParam commentParam) {
+        SysUser sysUser = UserThreadLocal.get();
+        Comment comment = new Comment();
+        comment.setArticleId(commentParam.getArticleId());
+        comment.setAuthorId(sysUser.getId());
+        comment.setContent(commentParam.getContent());
+        comment.setCreateDate(System.currentTimeMillis());
+        Long parent = commentParam.getParent();
+        if (parent == null || parent == 0) {
+            comment.setLevel(1);
+        }else{
+            comment.setLevel(2);
+        }
+        //如果是空，parent就是0
+        comment.setParentId(parent == null ? 0 : parent);
+        Long toUserId = commentParam.getToUserId();
+        comment.setToUid(toUserId == null ? 0 : toUserId);
+        this.commentMapper.insert(comment);
+        return Result.success(null);
+    }
+
     private List<CommentVo> copyList(List<Comment> comments) {
         List<CommentVo> commentVoList = new ArrayList<>();
         for (Comment comment : comments) {
@@ -60,7 +85,7 @@ public class CommentsServiceImpl implements CommentsService {
         if (1 == level){
             Long id = comment.getId();
             List<CommentVo> commentVoList = findCommentsByParentId(id);
-            commentVo.setChildren(commentVoList);
+            commentVo.setChildrens(commentVoList);
         }
         //to User 给谁评论
         if (level > 1){

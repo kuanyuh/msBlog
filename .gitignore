@@ -32,3 +32,19 @@ build/
 ### VS Code ###
 .vscode/
 blog-api/src/main/resources/application.properties
+blog-admin/.mvn/wrapper/maven-wrapper.jar
+blog-admin/.mvn/wrapper/maven-wrapper.jar
+blog-admin/.mvn/wrapper/maven-wrapper.properties
+blog-admin/.mvn/wrapper/maven-wrapper.jar
+blog-admin/mvnw
+blog-api/.mvn/wrapper/maven-wrapper.jar
+blog-admin/mvnw.cmd
+blog-admin/.mvn/wrapper/maven-wrapper.jar
+blog-api/.mvn/wrapper/maven-wrapper.jar
+blog-api/.mvn/wrapper/maven-wrapper.properties
+blog-admin/.mvn/wrapper/maven-wrapper.jar
+blog-api/.mvn/wrapper/maven-wrapper.jar
+blog-api/mvnw
+blog-api/mvnw.cmd
+blog-api/src/main/java/xyz/kuanyu/blog/config/01.md
+blog-api/src/main/resources/application.properties
