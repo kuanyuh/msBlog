@@ -5,12 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.kuanyu.blog.dao.dos.Archives;
 import xyz.kuanyu.blog.dao.mapper.ArticleBodyMapper;
 import xyz.kuanyu.blog.dao.mapper.ArticleMapper;
+import xyz.kuanyu.blog.dao.mapper.ArticleTagMapper;
 import xyz.kuanyu.blog.dao.pojo.Article;
 import xyz.kuanyu.blog.dao.pojo.ArticleBody;
+import xyz.kuanyu.blog.dao.pojo.ArticleTag;
+import xyz.kuanyu.blog.dao.pojo.SysUser;
 import xyz.kuanyu.blog.service.*;
+import xyz.kuanyu.blog.utils.UserThreadLocal;
 import xyz.kuanyu.blog.vo.ArticleBodyVo;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.Result;
+import xyz.kuanyu.blog.vo.TagVo;
+import xyz.kuanyu.blog.vo.params.ArticleParam;
 import xyz.kuanyu.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -91,6 +97,54 @@ public class ArticleServiceImpl implements ArticleService {
         // 更新 增加了此次接口的 耗时 如果一旦更新出问题，不能影响 查看文章的操作
         //线程池  可以把更新操作 扔到线程池中去执行，和主线程就不相关了
         threadService.updateArticleViewCount(articleMapper,article);
+        return Result.success(articleVo);
+    }
+
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
+
+    @Override
+    public Result publish(ArticleParam articleParam) {
+        /**
+         * 1. 发布文章 目的 构建Article对象
+         * 2. 作者id  当前的登录用户
+         * 3. 标签  要将标签加入到 关联列表当中
+         * 4. body 内容存储 article bodyId
+         */
+        SysUser sysUser = UserThreadLocal.get();
+        Article article = new Article();
+        article.setAuthorId(sysUser.getId());
+        article.setCategoryId(articleParam.getCategory().getId());
+        article.setCreateDate(System.currentTimeMillis());
+        article.setCommentCounts(0);
+        article.setSummary(articleParam.getSummary());
+        article.setTitle(articleParam.getTitle());
+        article.setViewCounts(0);
+        article.setWeight(Article.Article_Common);
+        article.setBodyId(-1L);
+
+        this.articleMapper.insert(article);
+        //tags
+        List<TagVo> tags = articleParam.getTags();
+        if (tags != null) {
+            for (TagVo tag : tags) {
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setArticleId(article.getId());
+                articleTag.setTagId(tag.getId());
+                this.articleTagMapper.insert(articleTag);
+            }
+        }
+        //body
+        ArticleBody articleBody = new ArticleBody();
+        articleBody.setContent(articleParam.getBody().getContent());
+        articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+        articleBody.setArticleId(article.getId());
+        articleBodyMapper.insert(articleBody);
+        article.setBodyId(articleBody.getId());
+        //只有当更改数据库时才插入或者更新，一般查询就可以了
+        articleMapper.updateById(article);
+        ArticleVo articleVo = new ArticleVo();
+        articleVo.setId(article.getId());
         return Result.success(articleVo);
     }
 

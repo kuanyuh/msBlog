@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.kuanyu.blog.service.ArticleService;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.Result;
+import xyz.kuanyu.blog.vo.params.ArticleParam;
 import xyz.kuanyu.blog.vo.params.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,5 +45,10 @@ public class ArticleController {
     @PostMapping("view/{id}")
     public Result findArticleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);
+    }
+
+    @PostMapping("publish")
+    public Result publish(@RequestBody ArticleParam articleParam){
+        return articleService.publish(articleParam);
     }
 }
