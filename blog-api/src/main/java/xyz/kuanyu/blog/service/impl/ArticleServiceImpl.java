@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -143,9 +145,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setBodyId(articleBody.getId());
         //只有当更改数据库时才插入或者更新，一般查询就可以了
         articleMapper.updateById(article);
-        ArticleVo articleVo = new ArticleVo();
-        articleVo.setId(article.getId());
-        return Result.success(articleVo);
+//        ArticleVo articleVo = new ArticleVo();
+//        articleVo.setId(article.getId());
+        Map<String, String> map = new HashMap<>();
+        map.put("id", article.getId().toString());
+        return Result.success(map);
     }
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {

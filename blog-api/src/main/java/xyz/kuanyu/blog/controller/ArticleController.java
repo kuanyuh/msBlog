@@ -1,6 +1,7 @@
 package xyz.kuanyu.blog.controller;
 
 import org.springframework.web.bind.annotation.*;
+import xyz.kuanyu.blog.common.aop.LogAnnotation;
 import xyz.kuanyu.blog.service.ArticleService;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.Result;
@@ -18,6 +19,7 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping
+    @LogAnnotation(module="文章",operation="获取文章列表")
     public Result listArticle(@RequestBody PageParams pageParams){
         //ArticleVo 页面接收的数据
         List<ArticleVo> articles = articleService.listArticlesPage(pageParams);
