@@ -1,6 +1,7 @@
 package xyz.kuanyu.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.kuanyu.blog.dao.dos.Archives;
 import xyz.kuanyu.blog.dao.mapper.ArticleBodyMapper;
@@ -40,19 +41,53 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private SysUserService sysUserService;
 
+//    @Override
+//    public List<ArticleVo> listArticle(PageParams pageParams) {
+//        /**
+//         * 分页查询 article 数据库表
+//         */
+//        Page page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
+//        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+//        //是否只查询特定标签
+//        if (pageParams.getCategoryId()!=null) {
+//            //and category_id=#{categoryId}
+//            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+//        }
+//        List<Long> articleIdList = new ArrayList<>();
+//        if (pageParams.getCategoryId()!=null){
+//            //加入标签条件查询
+//            //article表中并没有tag字段 一篇文章有多个标签
+//            //article_tog article_id 1：n tag_id
+//            //我们需要利用一个全新的属于文章标签的queryWrapper将这篇文章的article_Tag查出来，保存到一个list当中。
+//            // 然后再根据queryWrapper的in方法选择我们需要的标签即可。
+//            LambdaQueryWrapper<ArticleTag> articleTagLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//            articleTagLambdaQueryWrapper.eq(ArticleTag::getTagId,pageParams.getTagId());
+//            List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagLambdaQueryWrapper);
+//            for (ArticleTag articleTag : articleTags) {
+//                articleIdList.add(articleTag.getArticleId());
+//            }
+//            if (articleTags.size() > 0){
+//                queryWrapper.in(Article::getId, articleIdList);
+//            }
+//        }
+//        //置顶排序
+//        queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);
+//        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+//        List<Article> records = articlePage.getRecords();
+//        List<ArticleVo> articleVoList = copyList(records, true, true);
+//        return articleVoList;
+//    }
+
     @Override
-    public List<ArticleVo> listArticlesPage(PageParams pageParams) {
-        /**
-         * 分页查询 article 数据库表
-         */
-        Page page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        //置顶排序
-        queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);
-        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
-        List<Article> records = articlePage.getRecords();
-        List<ArticleVo> articleVoList = copyList(records, true, true);
-        return articleVoList;
+    public Result listArticle(PageParams pageParams) {
+        Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
+        IPage<Article> articleIPage = this.articleMapper.listArticle(
+                page,
+                pageParams.getCategoryId(),
+                pageParams.getTagId(),
+                pageParams.getYear(),
+                pageParams.getMonth());
+        return Result.success(copyList(articleIPage.getRecords(),true,true));
     }
 
     @Override

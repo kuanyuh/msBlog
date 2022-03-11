@@ -22,9 +22,9 @@ public class ArticleController {
     @LogAnnotation(module="文章",operation="获取文章列表")
     public Result listArticle(@RequestBody PageParams pageParams){
         //ArticleVo 页面接收的数据
-        List<ArticleVo> articles = articleService.listArticlesPage(pageParams);
 
-        return Result.success(articles);
+
+        return articleService.listArticle(pageParams);
     }
 
     @PostMapping("hot")
