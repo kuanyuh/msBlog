@@ -2,6 +2,7 @@ package xyz.kuanyu.blog.controller;
 
 import org.springframework.web.bind.annotation.*;
 import xyz.kuanyu.blog.common.aop.LogAnnotation;
+import xyz.kuanyu.blog.common.cache.Cache;
 import xyz.kuanyu.blog.service.ArticleService;
 import xyz.kuanyu.blog.vo.ArticleVo;
 import xyz.kuanyu.blog.vo.Result;
@@ -28,12 +29,14 @@ public class ArticleController {
     }
 
     @PostMapping("hot")
+    @Cache(expire = 5 * 60 * 1000,name = "hot_article")
     public Result hotArticle(){
         int limit = 5;
         return articleService.hotArticle(limit);
     }
 
     @PostMapping("new")
+    @Cache(expire = 5 * 60 * 1000,name = "new_article")
     public Result newArticles(){
         int limit = 5;
         return articleService.newArticles(limit);
