@@ -77,7 +77,7 @@ public class GiteeImgBedUtils {
         }
         //请求成功：返回下载地址
         JSONObject content = JSONUtil.parseObj(jsonObj.getObj("content"));
-        return content.getObj("path").toString();
+        return PRE + content.getObj("path").toString();
     }
 
     /**
