@@ -48,3 +48,4 @@ blog-api/mvnw
 blog-api/mvnw.cmd
 blog-api/src/main/java/xyz/kuanyu/blog/config/01.md
 blog-api/src/main/resources/application.properties
+blog-admin/src/main/resources/application.properties
