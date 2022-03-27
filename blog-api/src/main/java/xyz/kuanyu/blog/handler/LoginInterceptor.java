@@ -67,7 +67,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         //如果不删除 ThreadLocal中用完的信息，会有内存泄露的风险
-        //四种：强引用（不会被回收）、软引用（内存不足时回收）、弱引用（gc时直接回收）、虚引用（差不多不存在的引用）
+        //四种：强引用（不会被回收）、软引用（发生gc且内存不足，才会被回收）、弱引用（gc时直接回收）、虚引用（差不多不存在的引用）
         UserThreadLocal.remove();
     }
 }
